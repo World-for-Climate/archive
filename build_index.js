@@ -1,6 +1,8 @@
 import pkg from 'pg'
+import Cursor from 'pg-cursor'
 import Fuse from 'fuse.js'
 import * as fs from "fs";
+import * as cliProgress from "cli-progress";
 
 const {Client} = pkg;
 
@@ -12,7 +14,9 @@ async function main() {
     })
     await client.connect()
 
-    const res = await client.query(`
+    const questions_count = await client.query("SELECT COUNT(questions.id) FROM questions WHERE questions.deleted_at IS NULL");
+
+    const cursor = await client.query(new Cursor(`
         SELECT questions.id,
                questions.updated_at,
                TRIM(public_name)                                  as auther,
@@ -29,9 +33,26 @@ async function main() {
         WHERE questions.deleted_at IS NULL
 
         GROUP BY questions.id, questions.created_at, questions.updated_at, auther, title, body
-    `)
-    let questions = res.rows;
+    `))
 
+    let questions = [];
+
+    const progress = new cliProgress.SingleBar({}, cliProgress.Presets.legacy)
+    progress.start(questions_count.rows[0].count, 0, "fetching questions...")
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+        const rows = await cursor.read(100)
+        if (rows.length === 0) {
+            break
+        }
+
+        questions = questions.concat(rows)
+        progress.increment(rows.length)
+    }
+    progress.stop();
+
+    const progress2 = new cliProgress.SingleBar({}, cliProgress.Presets.legacy)
+    progress2.start(questions.length, 0, "fetching answers...")
     for (const question of questions) {
         const res = await client.query(`
             SELECT answers.id,
@@ -51,7 +72,9 @@ async function main() {
         `, [question.id])
 
         question.answers = res.rows
+        progress2.increment();
     }
+    progress2.stop();
     await client.end()
 
     let id_map = {}
@@ -95,10 +118,19 @@ async function main() {
 function build_routes(questions) {
     const BASE_PATH = "src/routes/questions/"
 
+    const progress = new cliProgress.SingleBar({}, cliProgress.Presets.legacy)
+    progress.start(questions.length, 0)
+
     for (const question of questions) {
-        fs.mkdirSync(BASE_PATH + question.id, {recursive: true});
-        fs.writeFileSync(BASE_PATH + question.id + "/+page.svelte", "<script>import QuestionView from \"../../../components/question_view.svelte\"</script><QuestionView question_id=" + question.id + "/>")
+        if (question.id) {
+            fs.mkdirSync(BASE_PATH + question.id, {recursive: true});
+            fs.writeFileSync(BASE_PATH + question.id + "/+page.svelte", "<script>import QuestionView from \"../../../components/question_view.svelte\"</script><QuestionView question_id=" + question.id + "/>")
+        }
+
+        progress.increment(1, question.id)
     }
+
+    progress.stop()
 }
 
 main().then(() => {

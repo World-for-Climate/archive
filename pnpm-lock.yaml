@@ -22,6 +22,9 @@ devDependencies:
   autoprefixer:
     specifier: ^10.4.14
     version: 10.4.16(postcss@8.4.31)
+  cli-progress:
+    specifier: ^3.12.0
+    version: 3.12.0
   daisyui:
     specifier: ^3.1.6
     version: 3.9.4
@@ -37,6 +40,9 @@ devDependencies:
   pg:
     specifier: ^8.11.3
     version: 8.11.3
+  pg-cursor:
+    specifier: ^2.10.3
+    version: 2.10.3(pg@8.11.3)
   postcss:
     specifier: ^8.4.24
     version: 8.4.31
@@ -646,6 +652,13 @@ packages:
       fsevents: 2.3.3
     dev: true
 
+  /cli-progress@3.12.0:
+    resolution: { integrity: sha512-tRkV3HJ1ASwm19THiiLIXLO7Im7wlTuKnvkYaTkyoAPefqjNg7W7DHKUlGRxy9vxDvbyCYQkQozvptuMkGCg8A== }
+    engines: { node: '>=4' }
+    dependencies:
+      string-width: 4.2.3
+    dev: true
+
   /code-red@1.0.4:
     resolution: { integrity: sha512-7qJWqItLA8/VPVlKJlFXU+NBlo/qyfs39aJcuMT/2ere32ZqvF5OSxgdM5xOfJJ7O429gg2HM47y8v9P+9wrNw== }
     dependencies:
@@ -775,6 +788,10 @@ packages:
 
   /electron-to-chromium@1.4.588:
     resolution: { integrity: sha512-soytjxwbgcCu7nh5Pf4S2/4wa6UIu+A3p03U2yVr53qGxi1/VTR3ENI+p50v+UxqqZAfl48j3z55ud7VHIOr9w== }
+    dev: true
+
+  /emoji-regex@8.0.0:
+    resolution: { integrity: sha512-MSjYzcWNOA0ewAHpz0MxpYFvwg6yjy1NG3xteoqz644VCo/RPgnr1/GGt+ic3iJTzQ8Eu3TdM14SawnVUmGE6A== }
     dev: true
 
   /esbuild@0.18.20:
@@ -1178,6 +1195,11 @@ packages:
     engines: { node: '>=0.10.0' }
     dev: true
 
+  /is-fullwidth-code-point@3.0.0:
+    resolution: { integrity: sha512-zymm5+u+sCsSWyD9qNaejV3DFvhCKclKdizYaJUuHA83RLjb7nSuGnddCHGv0hk+KY7BMAlsWeK4Ueg6EV6XQg== }
+    engines: { node: '>=8' }
+    dev: true
+
   /is-glob@4.0.3:
     resolution: { integrity: sha512-xelSayHH36ZgE7ZWhli7pW34hNbNl8Ojv5KVmkJD4hBdD3th8Tfk9vYasLM+mXWOZhFkgZfxhLSnrwRr4elSSg== }
     engines: { node: '>=0.10.0' }
@@ -1452,6 +1474,14 @@ packages:
 
   /pg-connection-string@2.6.2:
     resolution: { integrity: sha512-ch6OwaeaPYcova4kKZ15sbJ2hKb/VP48ZD2gE7i1J+L4MspCtBMAx8nMgz7bksc7IojCIIWuEhHibSMFH8m8oA== }
+    dev: true
+
+  /pg-cursor@2.10.3(pg@8.11.3):
+    resolution: { integrity: sha512-rDyBVoqPVnx/PTmnwQAYgusSeAKlTL++gmpf5klVK+mYMFEqsOc6VHHZnPKc/4lOvr4r6fiMuoxSFuBF1dx4FQ== }
+    peerDependencies:
+      pg: ^8
+    dependencies:
+      pg: 8.11.3
     dev: true
 
   /pg-int8@1.0.1:
@@ -1830,6 +1860,15 @@ packages:
   /split2@4.2.0:
     resolution: { integrity: sha512-UcjcJOWknrNkF6PLX83qcHM6KHgVKNkV62Y8a5uYDVv9ydGQVwAHMKqHdJje1VTWpljG0WYpCDhrCdAOYH4TWg== }
     engines: { node: '>= 10.x' }
+    dev: true
+
+  /string-width@4.2.3:
+    resolution: { integrity: sha512-wKyQRQpjJ0sIp62ErSZdGsjMJWsap5oRNihHhu6G7JVO/9jIB6UyevL+tXuOqrng8j/cxKTWyWUwvSTriiZz/g== }
+    engines: { node: '>=8' }
+    dependencies:
+      emoji-regex: 8.0.0
+      is-fullwidth-code-point: 3.0.0
+      strip-ansi: 6.0.1
     dev: true
 
   /strip-ansi@6.0.1:
