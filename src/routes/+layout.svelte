@@ -2,6 +2,15 @@
     import "../app.pcss";
     import {query_store} from "../stores.js";
     import ThemeSelect from "../components/theme_select.svelte"
+
+    const debounce = (callback, wait = 300) => {
+        let timeout
+
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => callback(...args), wait);
+        };
+    };
 </script>
 
 <nav class="navbar bg-base-100">
@@ -14,8 +23,10 @@
     </div>
     <div class="flex-none gap-2">
         <div class="form-control">
-            <input bind:value={$query_store} class="input input-bordered w-24 md:w-auto" placeholder="Search"
-                   type="text"/>
+            <input class="input input-bordered w-24 md:w-auto" on:keyup={debounce(e => {
+                       $query_store = e.target.value
+                   })} placeholder="Search"
+                   type="text" value={$query_store}/>
         </div>
 
         <ThemeSelect/>

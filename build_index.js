@@ -15,8 +15,7 @@ async function main() {
     await client.connect()
 
     const questions_count = await client.query("SELECT COUNT(questions.id) FROM questions WHERE questions.deleted_at IS NULL");
-
-    const cursor = await client.query(new Cursor(`
+    const questions_cursor = await client.query(new Cursor(`
         SELECT questions.id,
                questions.updated_at,
                TRIM(public_name) as author,
@@ -42,7 +41,7 @@ async function main() {
     progress.start(questions_count.rows[0].count, 0, "fetching questions...")
     // eslint-disable-next-line no-constant-condition
     while (true) {
-        const rows = await cursor.read(100)
+        const rows = await questions_cursor.read(100)
         if (rows.length === 0) {
             break
         }
@@ -52,49 +51,72 @@ async function main() {
     }
     progress.stop();
 
-    const progress2 = new cliProgress.SingleBar({}, cliProgress.Presets.legacy)
-    progress2.start(questions.length, 0, "fetching answers...")
-    for (const question of questions) {
-        const res = await client.query(`
-            SELECT answers.id,
-                   answers.updated_at,
-                   TRIM(public_name) as author,
-                   NULLIF(TRIM(title), '') as title,
-                   NULLIF(TRIM(body), '')  as body,
-                   count(uv.answer_id)     as votes
-            FROM answers
-                     LEFT JOIN public.users u on u.id = answers.author_id AND u.deleted_at IS NULL
-                     RIGHT JOIN user_answer_votes uv on uv.answer_id = answers.id
-
-            WHERE answers.deleted_at IS NULL
-              AND question_id = $1
-
-            GROUP BY answers.id, answers.updated_at, author, title, body
-            ORDER BY answers.updated_at DESC
-        `, [question.id])
-
-        question.answers = res.rows
-        progress2.increment();
-    }
-    progress2.stop();
-    await client.end()
-
     let id_map = {}
     for (let i = 0; i < questions.length; i++) {
         id_map[questions[i].id] = {
             "type": "question",
             "index": i,
         }
+    }
 
-        for (let j = 0; j < questions[i].answers.length; j++) {
-            id_map[questions[i].id] = {
+    const answers_count = await client.query("SELECT COUNT(id) FROM answers WHERE deleted_at IS NULL");
+    const progress2 = new cliProgress.SingleBar({}, cliProgress.Presets.legacy)
+    progress2.start(answers_count, 0, "fetching answers...")
+    const answers_cursor = await client.query(new Cursor(`
+        SELECT answers.id,
+               answers.updated_at,
+               question_id,
+               TRIM(public_name)       as author,
+               NULLIF(TRIM(title), '') as title,
+               NULLIF(TRIM(body), '')  as body,
+               count(uv.answer_id)     as votes
+        FROM answers
+                 LEFT JOIN public.users u on u.id = answers.author_id AND u.deleted_at IS NULL
+                 RIGHT JOIN user_answer_votes uv on uv.answer_id = answers.id
+
+        WHERE answers.deleted_at IS NULL
+
+        GROUP BY answers.id, question_id, answers.updated_at, author, title, body
+        ORDER BY answers.updated_at DESC
+    `))
+
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+        const rows = await answers_cursor.read(100)
+        if (rows.length === 0) {
+            break
+        }
+
+        for (const row of rows) {
+            if (!id_map[row.question_id]) {
+                continue
+            }
+
+            if (!questions[id_map[row.question_id].index].answers) {
+                questions[id_map[row.question_id].index].answers = []
+            }
+
+            questions[id_map[row.question_id].index].answers.push({
+                id: row.id,
+                updated_at: row.updated_at,
+                author: row.author,
+                title: row.title,
+                body: row.body,
+                votes: row.votes
+            })
+
+            id_map[row.id] = {
                 "type": "answer",
-                "index": j,
-                "question_id": questions[i].id,
-                "question_index": i,
+                "index": questions[id_map[row.question_id].index].answers.length - 1,
+                "question_id": row.question_id,
+                "question_index": id_map[row.question_id].index,
             }
         }
+
+        progress2.increment(rows.length)
     }
+    progress2.stop();
+    await client.end()
 
     const question_index = Fuse.createIndex(
         [
@@ -127,7 +149,7 @@ function build_routes(questions) {
     for (const question of questions) {
         if (question.id) {
             fs.mkdirSync(BASE_PATH + question.id, {recursive: true});
-            fs.writeFileSync(BASE_PATH + question.id + "/+page.svelte", "<script>import QuestionView from \"../../../components/question_view.svelte\"</script><QuestionView question_id=" + question.id + "/>")
+            fs.writeFileSync(BASE_PATH + question.id + "/+page.svelte", "<script>import QuestionView from \"../../../components/question_view.svelte\"</script><QuestionView question_id=\"" + question.id + "\"/>")
         }
 
         progress.increment(1, question.id)

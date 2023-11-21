@@ -1,9 +1,10 @@
 import {writable} from 'svelte/store';
 
-const {subscribe, update} = writable([]);
+const {subscribe, set, update} = writable([]);
 
 export default {
     subscribe,
+    set,
     add(topic) {
         update((prev) => {
             return [...prev, topic].sort()
@@ -13,5 +14,5 @@ export default {
         update((prev) => {
             return prev.filter(t => t !== topic);
         })
-    }
+    },
 };
