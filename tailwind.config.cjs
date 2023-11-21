@@ -7,6 +7,9 @@ const config = {
     theme: {
         extend: {}
     },
+    daisyui: {
+        themes: ["lemonade", "forest"],
+    },
 
     plugins: [daisyui]
 };

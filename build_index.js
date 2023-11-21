@@ -19,7 +19,7 @@ async function main() {
     const cursor = await client.query(new Cursor(`
         SELECT questions.id,
                questions.updated_at,
-               TRIM(public_name)                                  as auther,
+               TRIM(public_name) as author,
                NULLIF(TRIM(title), '')                            as title,
                NULLIF(TRIM(body), '')                             as body,
                array_remove(array_agg(DISTINCT t.label_en), NULL) as topics,
@@ -31,8 +31,9 @@ async function main() {
                  LEFT JOIN topics t on t.id = qt.topic_id
 
         WHERE questions.deleted_at IS NULL
-
-        GROUP BY questions.id, questions.created_at, questions.updated_at, auther, title, body
+          AND questions.id IS NOT NULL
+        GROUP BY questions.id, questions.updated_at, author, title, body
+        ORDER BY questions.updated_at DESC
     `))
 
     let questions = [];
@@ -57,7 +58,7 @@ async function main() {
         const res = await client.query(`
             SELECT answers.id,
                    answers.updated_at,
-                   TRIM(public_name)       as auther,
+                   TRIM(public_name) as author,
                    NULLIF(TRIM(title), '') as title,
                    NULLIF(TRIM(body), '')  as body,
                    count(uv.answer_id)     as votes
@@ -68,7 +69,8 @@ async function main() {
             WHERE answers.deleted_at IS NULL
               AND question_id = $1
 
-            GROUP BY answers.id, answers.updated_at, auther, title, body
+            GROUP BY answers.id, answers.updated_at, author, title, body
+            ORDER BY answers.updated_at DESC
         `, [question.id])
 
         question.answers = res.rows
@@ -112,6 +114,7 @@ async function main() {
     build_routes(questions)
 
     fs.writeFileSync("src/search_index.json", JSON.stringify(question_index))
+    fs.writeFileSync("src/questions.json", JSON.stringify(questions))
     fs.writeFileSync("src/id_map.json", JSON.stringify(id_map))
 }
 

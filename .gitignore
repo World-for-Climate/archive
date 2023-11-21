@@ -12,4 +12,5 @@ vite.config.ts.timestamp-*
 
 /src/id_map.json
 /src/search_index.json
+/src/questions.json
 /src/routes/questions/*/+page.svelte
