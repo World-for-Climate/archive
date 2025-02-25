@@ -2,6 +2,7 @@
 	import '../app.pcss';
 	import { query_store } from '../stores.js';
 	import ThemeSelect from '../components/theme_select.svelte';
+	import { base } from '$app/paths';
 
 	const debounce = (callback, wait = 300) => {
 		let timeout;
@@ -15,9 +16,9 @@
 
 <nav class="navbar bg-base-100 flex-col md:flex-row">
 	<div class="flex-1">
-		<a class="btn btn-ghost text-xl" href="/">
+		<a class="btn btn-ghost text-xl" href={base}>
 			<div class="w-10 rounded-full">
-				<img alt="World for Climate logo" src="/favicon.png" />
+				<img alt="World for Climate logo" src="{base}/favicon.png" />
 			</div>
 			World for Climate<span class="border-l-2 pl-2">archive</span></a
 		>

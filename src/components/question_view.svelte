@@ -1,4 +1,6 @@
 <script context="module">
+	import { base } from '$app/paths';
+
 	const name = 'QuestionView';
 </script>
 
@@ -30,7 +32,7 @@
 		{#if !expanded}
 			<div class="card-actions justify-end">
 				<div class="btn btn-outline">{question.votes} votes</div>
-				<a href="/questions/{question_id}" class="btn btn-primary"
+				<a href="{base}/questions/{question_id}" class="btn btn-primary"
 					>See {question.answers?.length ?? 0}
 					Answers</a
 				>

@@ -1,5 +1,7 @@
-import {vitePreprocess} from "@sveltejs/kit/vite";
+import { vitePreprocess } from "@sveltejs/kit/vite";
 import adapter from '@sveltejs/adapter-static';
+
+const dev = process.argv.includes('dev');
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -11,7 +13,10 @@ const config = {
             assets: 'build',
             precompress: true,
             strict: true
-        })
+        }),
+        paths: {
+            base: dev ? '' : '/archive'
+        }
     },
 
     preprocess: [vitePreprocess({})]
