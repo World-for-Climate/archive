@@ -15,65 +15,65 @@ importers:
         specifier: ^3.0.8
         version: 3.0.8
       fuse.js:
-        specifier: ^7.0.0
+        specifier: ^7.1.0
         version: 7.1.0
       svelte-icons:
         specifier: ^2.1.0
         version: 2.1.0
     devDependencies:
       '@sveltejs/adapter-auto':
-        specifier: ^2.0.0
+        specifier: ^2.1.1
         version: 2.1.1(@sveltejs/kit@1.30.4(svelte@4.2.19)(vite@4.5.9))
       '@sveltejs/adapter-static':
         specifier: ^2.0.3
         version: 2.0.3(@sveltejs/kit@1.30.4(svelte@4.2.19)(vite@4.5.9))
       '@sveltejs/kit':
-        specifier: ^1.27.4
+        specifier: ^1.30.4
         version: 1.30.4(svelte@4.2.19)(vite@4.5.9)
       autoprefixer:
-        specifier: ^10.4.14
+        specifier: ^10.4.20
         version: 10.4.20(postcss@8.5.3)
       cli-progress:
         specifier: ^3.12.0
         version: 3.12.0
       daisyui:
-        specifier: ^3.1.6
+        specifier: ^3.9.4
         version: 3.9.4
       eslint:
-        specifier: ^8.28.0
+        specifier: ^8.57.1
         version: 8.57.1
       eslint-config-prettier:
-        specifier: ^9.0.0
+        specifier: ^9.1.0
         version: 9.1.0(eslint@8.57.1)
       eslint-plugin-svelte:
-        specifier: ^2.30.0
+        specifier: ^2.46.1
         version: 2.46.1(eslint@8.57.1)(svelte@4.2.19)
       pg:
-        specifier: ^8.11.3
+        specifier: ^8.13.3
         version: 8.13.3
       pg-cursor:
-        specifier: ^2.10.3
+        specifier: ^2.12.3
         version: 2.12.3(pg@8.13.3)
       postcss:
-        specifier: ^8.4.24
+        specifier: ^8.5.3
         version: 8.5.3
       postcss-load-config:
-        specifier: ^4.0.1
+        specifier: ^4.0.2
         version: 4.0.2(postcss@8.5.3)
       prettier:
-        specifier: ^3.0.0
+        specifier: ^3.5.2
         version: 3.5.2
       prettier-plugin-tailwindcss:
         specifier: ^0.4.1
         version: 0.4.1(prettier@3.5.2)
       svelte:
-        specifier: ^4.0.5
+        specifier: ^4.2.19
         version: 4.2.19
       tailwindcss:
-        specifier: ^3.3.2
+        specifier: ^3.4.17
         version: 3.4.17
       vite:
-        specifier: ^4.4.2
+        specifier: ^4.5.9
         version: 4.5.9
 
 packages:

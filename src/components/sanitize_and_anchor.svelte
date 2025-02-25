@@ -1,5 +1,5 @@
 <script>
-	import anchorme from 'anchorme';
+	import anchorme from 'anchorme/dist/browser/anchorme';
 	import { sanitize } from '@jill64/universal-sanitizer';
 
 	export let input;
