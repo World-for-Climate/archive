@@ -31,7 +31,15 @@
   },
   "type": "module",
   "dependencies": {
+    "@jill64/universal-sanitizer": "^1.4.1",
+    "anchorme": "^3.0.8",
     "fuse.js": "^7.0.0",
     "svelte-icons": "^2.1.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@sveltejs/kit",
+      "esbuild"
+    ]
   }
 }
